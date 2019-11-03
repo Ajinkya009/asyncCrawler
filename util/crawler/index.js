@@ -5,44 +5,16 @@ const logSymbols = require('log-symbols');
 
 class Crawler{
 
-    constructor(concurrency,root){
-        this.task = this.parseUrl;
+    constructor(concurrency,baseUrl){
         this.concurrencyLimit = concurrency;
         this.urls = [];
         this.concurrencyCount = 0;
         this.urlStatus = {};
-        this.root = root;
+        this.baseUrl = baseUrl;
     }
 
     init(){
-        this.enqueue(this.root);
-    }
-
-    bodyParser(body){
-        const self = this;
-        const $ = cheerio.load(body);
-        const urls = $(`a[href^="${this.root}"]`);
-        urls.each((index, url) => {
-            const baseUrl = url.attribs.href.split('?')[0];
-            URL.update({address:baseUrl},{$inc:{referenceCount:1}},{upsert:true}).then((resp)=>{
-                const params = (url.attribs.href.split('?')[1]);
-                if(params!=undefined){
-                    const paramKeys = params.split("&").map(param=>{
-                        return param.split('=')[0];
-                    });
-                    URL.update({address:baseUrl},{$addToSet:{parameters:{$each:paramKeys}}}).then().catch(err=>{
-                        console.log(err);
-                    });
-                }
-            }).catch(err=>{
-                console.log(err);
-            });
-            
-            if (!self.urlStatus[baseUrl]) {
-                self.urlStatus[baseUrl] = 'parsing';
-                self.enqueue(baseUrl);
-            }
-        });
+        this.enqueue(this.baseUrl);
     }
 
     enqueue(url){
@@ -59,9 +31,9 @@ class Crawler{
     processUrl(){
         const url = this.urls.shift();
         let next = this.processUrl.bind(this);
-        this.task(url,next);
+        this.parseUrl(url,next);
     }
-
+    
     parseUrl(url,next){
         const self = this;
         console.log(logSymbols.info,'Started parsing: ', url);
@@ -77,6 +49,34 @@ class Crawler{
             }
         });
     }
+
+    bodyParser(body){
+        const self = this;
+        const $ = cheerio.load(body);
+        const urls = $(`a[href^="${this.baseUrl}"]`);
+        urls.each((index, url) => {
+            const baseUrl = url.attribs.href.split('?')[0];
+            URL.updateOne({address:baseUrl},{$inc:{referenceCount:1}},{upsert:true}).then((resp)=>{
+                const params = (url.attribs.href.split('?')[1]);
+                if(params!=undefined){
+                    const paramKeys = params.split("&").map(param=>{
+                        return param.split('=')[0];
+                    });
+                    URL.updateOne({address:baseUrl},{$addToSet:{parameters:{$each:paramKeys}}}).then().catch(err=>{
+                        console.log(err);
+                    });
+                }
+            }).catch(err=>{
+                console.log(err);
+            });
+            
+            if (!self.urlStatus[baseUrl]) {
+                self.urlStatus[baseUrl] = 'parsing';
+                self.enqueue(baseUrl);
+            }
+        });
+    }
+
 }
 
 module.exports = Crawler;
