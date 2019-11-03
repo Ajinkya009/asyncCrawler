@@ -13,8 +13,6 @@ What is needed to be stored?
 
 ### Prerequisites
 
-Following things are required in order to run the code in development mode:
-
 ```
 1) Node.js
 2) MongodB
@@ -33,7 +31,7 @@ Once the server starts:
 
 ```
 1) It will start crawling data and then it will upload it to database.
-2) User can get all the uploaded data till that instant by sending a GET request to 'http://localhost:3000/api/url/getAllData'.
+2) User can get all the uploaded data by sending a GET request to 'http://localhost:3000/api/url/getAllData'.
 ```
 
 ## Deployment in production mode
