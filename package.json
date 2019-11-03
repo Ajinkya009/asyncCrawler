@@ -1,0 +1,30 @@
+{
+  "name": "web-crawler",
+  "version": "1.0.0",
+  "description": "Web crawler using nodejs",
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cheerio": "^1.0.0-rc.3",
+    "connect-redis": "^4.0.3",
+    "cookie-parser": "^1.4.4",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "helmet": "^3.21.1",
+    "log-symbols": "^3.0.0",
+    "mongoose": "^5.7.7",
+    "morgan": "^1.9.1",
+    "redis": "^2.8.0",
+    "redis-lru": "^0.6.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "NODE_ENV=prod node index.js",
+    "dev-server": "node index.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
