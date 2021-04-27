@@ -15,7 +15,7 @@
     "log-symbols": "^3.0.0",
     "mongoose": "^5.7.7",
     "morgan": "^1.9.1",
-    "redis": "^2.8.0",
+    "redis": "^3.1.1",
     "redis-lru": "^0.6.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.4"
